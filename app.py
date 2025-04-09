@@ -11,9 +11,16 @@ import os
 
 # 폰트 파일 경로 설정
 font_path = os.path.join('nanum-gothic', 'NanumGothic.ttf')
+
+# Streamlit 리눅스 가상환경 따름
+# 기본값으로 한글폰트 없음
+# 별도 설치 필요, apt-get install 사용할 수 없음
+# 명시적으로 해당폰트 위치 지정
 font_prop = fm.FontProperties(fname=font_path)
 
 # 운영체제에 따른 한글 폰트 설정
+# Local Test 할 때는 Windows
+# 배포할 때는 Streamlit 내부 리눅스 가상환경으로 배포가 됨
 if platform.system() == 'Windows':
     plt.rcParams['font.family'] = 'Malgun Gothic'
 else:  # Linux or other systems
@@ -89,7 +96,7 @@ try:
     with tab1:
         st.subheader("Matplotlib 차트")
         fig, ax = plt.subplots(figsize=(12, 6))
-        ax.plot(df.index, df['Close'], label='종가')
+        ax.plot(df.index, df['Close'], label='종가') # seaborn 문법 아님 / motplotlib 문법
         ax.set_title(f"{selected_company} ({ticker}) 주가")
         ax.set_xlabel("날짜")
         ax.set_ylabel("가격 ($)")
@@ -101,7 +108,7 @@ try:
     with tab2:
         st.subheader("Seaborn 차트")
         fig, ax = plt.subplots(figsize=(12, 6))
-        sns.lineplot(data=df, x=df.index, y='Close', ax=ax)
+        sns.lineplot(data=df, x=df.index, y='Close', ax=ax) # seaborn 문법
         ax.set_title(f"{selected_company} ({ticker}) 주가")
         ax.set_xlabel("날짜")
         ax.set_ylabel("가격 ($)")
@@ -127,6 +134,7 @@ try:
     
     with col1:
         # 이동평균선
+        # pandas 메서드 중에서 시계열 처리 관련 메서드가 존재
         df['MA20'] = df['Close'].rolling(window=20).mean()
         df['MA50'] = df['Close'].rolling(window=50).mean()
         
